@@ -49,5 +49,14 @@
       "role": "admin",
       "name": "Administrador"
     }
-  ]
+  ],
+  "storeSettings": {
+    "storeName": "TechStore",
+    "storeWhatsApp": "5511999999999",
+    "storeColors": {
+      "primary": "#3b82f6",
+      "secondary": "#f3f4f6",
+      "accent": "#8b5cf6"
+    }
+  }
 }

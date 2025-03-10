@@ -7,10 +7,12 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { getProducts } from '@/lib/api';
+import { useStore } from '@/context/StoreContext';
 
 const Admin = () => {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { settings } = useStore();
   
   const { data: products = [] } = useQuery({
     queryKey: ['products'],
@@ -27,9 +29,9 @@ const Admin = () => {
       <div className="container mx-auto py-16 px-4 page-transition">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Administração</h1>
+            <h1 className="text-3xl font-bold mb-2">Administração de {settings.storeName}</h1>
             <p className="text-muted-foreground">
-              Bem-vindo, {user?.name}. Gerencie produtos e visualize estatísticas.
+              Bem-vindo, {user?.name}. Gerencie produtos e configurações da loja.
             </p>
           </div>
           
@@ -88,7 +90,7 @@ const Admin = () => {
         </div>
         
         {/* Admin Navigation */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
           <Card className="cursor-pointer card-hover" onClick={() => navigate('/admin/products')}>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -97,6 +99,21 @@ const Admin = () => {
               </CardTitle>
               <CardDescription>
                 Adicione, edite e remova produtos
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button variant="outline" className="w-full">Acessar</Button>
+            </CardContent>
+          </Card>
+          
+          <Card className="cursor-pointer card-hover" onClick={() => navigate('/admin/settings')}>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Settings className="h-5 w-5 mr-2 text-primary" />
+                Configurações da Loja
+              </CardTitle>
+              <CardDescription>
+                Personalize nome, cores e WhatsApp da loja
               </CardDescription>
             </CardHeader>
             <CardContent>

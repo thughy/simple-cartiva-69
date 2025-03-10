@@ -9,7 +9,7 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
   
   if (isLoading) {
@@ -26,6 +26,11 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
   
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  // Verificar se é admin para rotas de administração
+  if (location.pathname.startsWith('/admin') && user?.role !== 'admin') {
+    return <Navigate to="/" replace />;
   }
   
   return <>{children}</>;

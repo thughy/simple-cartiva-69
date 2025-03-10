@@ -1,5 +1,5 @@
 
-import { Product, ProductFormData, User } from '@/types';
+import { Product, ProductFormData, User, StoreSettings } from '@/types';
 import db from '@/data/db.json';
 
 // Simula um delay para parecer uma API real
@@ -70,6 +70,27 @@ export const loginUser = async (email: string, password: string): Promise<User |
   // Não retorna a senha para o cliente
   const { password: _, ...userWithoutPassword } = user;
   return userWithoutPassword as User;
+};
+
+// API de configurações da loja
+export const getStoreSettings = async (): Promise<StoreSettings> => {
+  await delay(400);
+  return database.storeSettings || {
+    storeName: "Minha Loja",
+    storeWhatsApp: "5511999999999",
+    storeColors: {
+      primary: "#3b82f6",
+      secondary: "#f3f4f6",
+      accent: "#8b5cf6"
+    }
+  };
+};
+
+export const updateStoreSettings = async (settings: StoreSettings): Promise<StoreSettings> => {
+  await delay(800);
+  
+  database.storeSettings = settings;
+  return settings;
 };
 
 // Função para resetar o banco de dados (útil para testes)

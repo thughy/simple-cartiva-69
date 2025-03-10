@@ -33,3 +33,14 @@ export interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
 }
+
+export interface StoreSettings {
+  storeName: string;
+  storeWhatsApp: string;
+  storeColors: {
+    primary: string;
+    secondary: string;
+    accent: string;
+  };
+  storeLogo?: string;
+}

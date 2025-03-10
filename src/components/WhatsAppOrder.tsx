@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Product } from '@/types';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '@/context/CartContext';
+import { useStore } from '@/context/StoreContext';
 
 interface WhatsAppOrderProps {
   product: Product;
@@ -15,6 +16,7 @@ const WhatsAppOrder = ({ product, quantity = 1 }: WhatsAppOrderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const { addToCart } = useCart();
+  const { settings } = useStore();
 
   const handleWhatsAppOrder = () => {
     setIsLoading(true);
@@ -44,6 +46,7 @@ const WhatsAppOrder = ({ product, quantity = 1 }: WhatsAppOrderProps) => {
         "bg-[#25D366] text-white font-medium",
         (isLoading || product.stock <= 0) && "opacity-70 cursor-not-allowed"
       )}
+      style={{ backgroundColor: "#25D366" }}
     >
       {isLoading ? (
         <div className="animate-spin rounded-full h-5 w-5 border-2 border-white"></div>
