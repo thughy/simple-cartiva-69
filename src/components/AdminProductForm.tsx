@@ -30,12 +30,20 @@ const AdminProductForm = ({
     isOnSale: false,
     imageUrl: '',
     category: '',
-    stock: 0,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    stock: 0
   };
   
-  const [formData, setFormData] = useState<ProductFormData>(initialData || defaultValues);
+  const [formData, setFormData] = useState<ProductFormData>(initialData ? {
+    name: initialData.name,
+    description: initialData.description,
+    price: initialData.price,
+    promotionalPrice: initialData.promotionalPrice,
+    isOnSale: initialData.isOnSale,
+    imageUrl: initialData.imageUrl,
+    category: initialData.category,
+    stock: initialData.stock
+  } : defaultValues);
+  
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
