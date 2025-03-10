@@ -1,47 +1,42 @@
 
-import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Package2, BarChart3, Settings } from 'lucide-react';
+import { Package2, BarChart3, Settings, LogOut } from 'lucide-react';
 import PageLayout from '@/components/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { mockProducts } from '@/data/mockData';
+import { useAuth } from '@/context/AuthContext';
+import { useQuery } from '@tanstack/react-query';
+import { getProducts } from '@/lib/api';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Simulating authentication
+  const { user, logout } = useAuth();
+  
+  const { data: products = [] } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts
+  });
   
   // Stats calculation
-  const totalProducts = mockProducts.length;
-  const productsInStock = mockProducts.filter(p => p.stock > 0).length;
-  const productsOnSale = mockProducts.filter(p => p.isOnSale).length;
-  
-  if (!isAuthenticated) {
-    return (
-      <PageLayout>
-        <div className="container mx-auto py-16 px-4">
-          <div className="max-w-md mx-auto text-center">
-            <h1 className="text-2xl font-bold mb-4">Acesso Restrito</h1>
-            <p className="text-muted-foreground mb-6">
-              Você precisa estar autenticado para acessar esta área.
-            </p>
-            <Button onClick={() => setIsAuthenticated(true)}>
-              Entrar
-            </Button>
-          </div>
-        </div>
-      </PageLayout>
-    );
-  }
+  const totalProducts = products.length;
+  const productsInStock = products.filter(p => p.stock > 0).length;
+  const productsOnSale = products.filter(p => p.isOnSale).length;
   
   return (
     <PageLayout>
       <div className="container mx-auto py-16 px-4 page-transition">
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold mb-2">Administração</h1>
-          <p className="text-muted-foreground">
-            Gerencie os produtos e visualize estatísticas
-          </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-10">
+          <div>
+            <h1 className="text-3xl font-bold mb-2">Administração</h1>
+            <p className="text-muted-foreground">
+              Bem-vindo, {user?.name}. Gerencie produtos e visualize estatísticas.
+            </p>
+          </div>
+          
+          <Button variant="outline" onClick={logout} className="md:w-auto w-full">
+            <LogOut className="h-4 w-4 mr-2" />
+            Sair
+          </Button>
         </div>
         
         {/* Stats Cards */}

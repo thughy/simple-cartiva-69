@@ -5,98 +5,123 @@ import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/PageLayout';
 import AdminProductForm from '@/components/AdminProductForm';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { mockProducts } from '@/data/mockData';
 import { Product, ProductFormData } from '@/types';
 import { useToast } from '@/hooks/use-toast';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { getProducts, createProduct, updateProduct, deleteProduct } from '@/lib/api';
 
 const AdminProducts = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const { data: products = [], isLoading } = useQuery({
+    queryKey: ['products'],
+    queryFn: getProducts
+  });
+  
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [productToDelete, setProductToDelete] = useState<Product | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
   
-  const handleCreateProduct = (data: ProductFormData) => {
-    setIsLoading(true);
+  const handleCreateProduct = async (data: ProductFormData) => {
+    setIsActionLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      const newProduct: Product = {
-        ...data,
-        id: `prod_${Date.now()}`,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
+    try {
+      await createProduct(data);
       
-      setProducts(prev => [newProduct, ...prev]);
+      // Invalidar cache para recarregar lista
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      
       setIsCreateDialogOpen(false);
-      setIsLoading(false);
+      setIsActionLoading(false);
       
       toast({
         title: "Produto criado",
         description: "O produto foi adicionado com sucesso."
       });
-    }, 500);
+    } catch (error) {
+      console.error("Erro ao criar produto:", error);
+      setIsActionLoading(false);
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao criar produto",
+        description: "Ocorreu um erro ao criar o produto. Tente novamente."
+      });
+    }
   };
   
-  const handleUpdateProduct = (data: ProductFormData) => {
+  const handleUpdateProduct = async (data: ProductFormData) => {
     if (!editingProduct) return;
     
-    setIsLoading(true);
+    setIsActionLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setProducts(prev => 
-        prev.map(product => 
-          product.id === editingProduct.id 
-            ? { ...product, ...data, updatedAt: new Date() } 
-            : product
-        )
-      );
+    try {
+      await updateProduct(editingProduct.id, data);
+      
+      // Invalidar cache para recarregar lista
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       
       setEditingProduct(null);
-      setIsLoading(false);
+      setIsActionLoading(false);
       
       toast({
         title: "Produto atualizado",
         description: "As alterações foram salvas com sucesso."
       });
-    }, 500);
+    } catch (error) {
+      console.error("Erro ao atualizar produto:", error);
+      setIsActionLoading(false);
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao atualizar produto",
+        description: "Ocorreu um erro ao atualizar o produto. Tente novamente."
+      });
+    }
   };
   
-  const handleDeleteProduct = () => {
+  const handleDeleteProduct = async () => {
     if (!productToDelete) return;
     
-    setIsLoading(true);
+    setIsActionLoading(true);
     
-    // Simulate API call
-    setTimeout(() => {
-      setProducts(prev => prev.filter(product => product.id !== productToDelete.id));
+    try {
+      await deleteProduct(productToDelete.id);
+      
+      // Invalidar cache para recarregar lista
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      
       setProductToDelete(null);
       setIsDeleteDialogOpen(false);
-      setIsLoading(false);
+      setIsActionLoading(false);
       
       toast({
         title: "Produto removido",
         description: "O produto foi removido com sucesso."
       });
-    }, 500);
+    } catch (error) {
+      console.error("Erro ao excluir produto:", error);
+      setIsActionLoading(false);
+      
+      toast({
+        variant: "destructive",
+        title: "Erro ao remover produto",
+        description: "Ocorreu um erro ao remover o produto. Tente novamente."
+      });
+    }
   };
   
   const openDeleteDialog = (product: Product) => {
     setProductToDelete(product);
     setIsDeleteDialogOpen(true);
   };
-  
-  const formattedPrice = (price: number) => 
-    new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(price);
   
   return (
     <PageLayout>
@@ -138,6 +163,7 @@ const AdminProducts = () => {
               products={products}
               onEdit={setEditingProduct}
               onDelete={openDeleteDialog}
+              isLoading={isLoading}
             />
           </TabsContent>
           
@@ -146,6 +172,7 @@ const AdminProducts = () => {
               products={products.filter(p => p.stock > 0)}
               onEdit={setEditingProduct}
               onDelete={openDeleteDialog}
+              isLoading={isLoading}
             />
           </TabsContent>
           
@@ -154,6 +181,7 @@ const AdminProducts = () => {
               products={products.filter(p => p.isOnSale)}
               onEdit={setEditingProduct}
               onDelete={openDeleteDialog}
+              isLoading={isLoading}
             />
           </TabsContent>
         </Tabs>
@@ -170,7 +198,7 @@ const AdminProducts = () => {
             
             <AdminProductForm 
               onSubmit={handleCreateProduct}
-              isLoading={isLoading}
+              isLoading={isActionLoading}
             />
           </DialogContent>
         </Dialog>
@@ -192,7 +220,7 @@ const AdminProducts = () => {
               <AdminProductForm
                 initialData={editingProduct}
                 onSubmit={handleUpdateProduct}
-                isLoading={isLoading}
+                isLoading={isActionLoading}
               />
             )}
           </DialogContent>
@@ -211,13 +239,13 @@ const AdminProducts = () => {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel disabled={isLoading}>Cancelar</AlertDialogCancel>
+              <AlertDialogCancel disabled={isActionLoading}>Cancelar</AlertDialogCancel>
               <AlertDialogAction 
                 onClick={handleDeleteProduct}
-                disabled={isLoading}
+                disabled={isActionLoading}
                 className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               >
-                {isLoading ? 'Excluindo...' : 'Excluir'}
+                {isActionLoading ? 'Excluindo...' : 'Excluir'}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>
@@ -231,9 +259,21 @@ interface ProductsTableProps {
   products: Product[];
   onEdit: (product: Product) => void;
   onDelete: (product: Product) => void;
+  isLoading: boolean;
 }
 
-const ProductsTable = ({ products, onEdit, onDelete }: ProductsTableProps) => {
+const ProductsTable = ({ products, onEdit, onDelete, isLoading }: ProductsTableProps) => {
+  if (isLoading) {
+    return (
+      <div className="bg-muted/30 rounded-lg p-8 text-center">
+        <div className="flex items-center justify-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        </div>
+        <p className="mt-4 text-muted-foreground">Carregando produtos...</p>
+      </div>
+    );
+  }
+  
   if (products.length === 0) {
     return (
       <div className="bg-muted/30 rounded-lg p-8 text-center">

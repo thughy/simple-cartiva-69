@@ -1,0 +1,53 @@
+
+{
+  "products": [
+    {
+      "id": "prod_001",
+      "name": "Smartphone X Pro",
+      "description": "Um smartphone avançado com câmera de alta resolução, processador rápido e tela AMOLED de 6.5 polegadas.",
+      "price": 2499.90,
+      "promotionalPrice": 2199.90,
+      "isOnSale": true,
+      "imageUrl": "https://images.unsplash.com/photo-1598327105666-5b89351aff97?q=80&w=1000&auto=format&fit=crop",
+      "category": "Eletrônicos",
+      "stock": 15,
+      "createdAt": "2023-10-01T00:00:00.000Z",
+      "updatedAt": "2023-11-15T00:00:00.000Z"
+    },
+    {
+      "id": "prod_002",
+      "name": "Notebook Ultra",
+      "description": "Notebook leve e potente com 16GB RAM, SSD de 512GB e processador de última geração.",
+      "price": 4999.90,
+      "promotionalPrice": null,
+      "isOnSale": false,
+      "imageUrl": "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?q=80&w=1000&auto=format&fit=crop",
+      "category": "Computadores",
+      "stock": 8,
+      "createdAt": "2023-09-15T00:00:00.000Z",
+      "updatedAt": "2023-09-15T00:00:00.000Z"
+    },
+    {
+      "id": "prod_003",
+      "name": "Fones de Ouvido Wireless",
+      "description": "Fones de ouvido sem fio com cancelamento de ruído e bateria de longa duração.",
+      "price": 399.90,
+      "promotionalPrice": 349.90,
+      "isOnSale": true,
+      "imageUrl": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1000&auto=format&fit=crop",
+      "category": "Acessórios",
+      "stock": 25,
+      "createdAt": "2023-08-20T00:00:00.000Z",
+      "updatedAt": "2023-10-10T00:00:00.000Z"
+    }
+  ],
+  "users": [
+    {
+      "id": "user_001",
+      "email": "admin@example.com",
+      "password": "admin123",
+      "role": "admin",
+      "name": "Administrador"
+    }
+  ]
+}

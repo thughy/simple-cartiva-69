@@ -4,7 +4,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
-  promotionalPrice?: number;
+  promotionalPrice?: number | null;
   isOnSale: boolean;
   imageUrl: string;
   category: string;
@@ -14,3 +14,22 @@ export interface Product {
 }
 
 export type ProductFormData = Omit<Product, 'id' | 'createdAt' | 'updatedAt'>;
+
+export interface CartItem {
+  product: Product;
+  quantity: number;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  password?: string; // Opcional porque não deve ser retornado da API
+  role: 'admin' | 'customer';
+  name: string;
+}
+
+export interface AuthState {
+  user: User | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+}

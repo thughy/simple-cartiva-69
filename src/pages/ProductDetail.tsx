@@ -6,37 +6,54 @@ import PageLayout from '@/components/PageLayout';
 import WhatsAppOrder from '@/components/WhatsAppOrder';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
-import { mockProducts } from '@/data/mockData';
 import { Product } from '@/types';
 import { useToast } from '@/hooks/use-toast';
+import { useCart } from '@/context/CartContext';
+import { getProductById } from '@/lib/api';
 
 const ProductDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { addToCart } = useCart();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   
   useEffect(() => {
-    // Simulate API fetch
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      const foundProduct = mockProducts.find(p => p.id === id);
-      setProduct(foundProduct || null);
-      setIsLoading(false);
+    const fetchProduct = async () => {
+      if (!id) return;
       
-      if (!foundProduct) {
+      setIsLoading(true);
+      
+      try {
+        const foundProduct = await getProductById(id);
+        
+        if (foundProduct) {
+          setProduct(foundProduct);
+        } else {
+          toast({
+            variant: "destructive",
+            title: "Produto não encontrado",
+            description: "O produto que você está procurando não existe.",
+          });
+          navigate('/products');
+        }
+      } catch (error) {
+        console.error('Erro ao buscar produto:', error);
         toast({
           variant: "destructive",
-          title: "Produto não encontrado",
-          description: "O produto que você está procurando não existe.",
+          title: "Erro ao carregar produto",
+          description: "Ocorreu um erro ao carregar o produto. Tente novamente.",
         });
         navigate('/products');
+      } finally {
+        setIsLoading(false);
       }
-    }, 500);
+    };
+    
+    fetchProduct();
   }, [id, navigate, toast]);
   
   const handleQuantityChange = (amount: number) => {
@@ -47,10 +64,9 @@ const ProductDetail = () => {
   };
   
   const handleAddToBag = () => {
-    toast({
-      title: "Produto adicionado",
-      description: `${product?.name} foi adicionado à sacola.`,
-    });
+    if (!product) return;
+    
+    addToCart(product, quantity);
   };
   
   if (isLoading || !product) {

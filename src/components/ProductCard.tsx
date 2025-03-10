@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom';
 import { ShoppingBag, Percent } from 'lucide-react';
 import { Product } from '@/types';
 import { cn } from '@/lib/utils';
+import { useCart } from '@/context/CartContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
 const ProductCard = ({ product }: ProductCardProps) => {
+  const { addToCart } = useCart();
   const hasPromotion = product.isOnSale && product.promotionalPrice;
   const discount = hasPromotion 
     ? Math.round(((product.price - (product.promotionalPrice || 0)) / product.price) * 100) 
@@ -19,6 +21,12 @@ const ProductCard = ({ product }: ProductCardProps) => {
       style: 'currency', 
       currency: 'BRL' 
     }).format(price);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product, 1);
+  };
 
   return (
     <div className="group relative card-hover overflow-hidden rounded-xl bg-card">
@@ -69,6 +77,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         </Link>
         
         <button 
+          onClick={handleAddToCart}
           className={cn(
             "w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg button-hover",
             "bg-primary text-primary-foreground"
