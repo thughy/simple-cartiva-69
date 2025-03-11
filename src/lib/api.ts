@@ -1,4 +1,3 @@
-
 import { Product, ProductFormData, User, StoreSettings } from '@/types';
 import db from '@/data/db.json';
 
@@ -82,6 +81,12 @@ export const getStoreSettings = async (): Promise<StoreSettings> => {
       primary: "#3b82f6",
       secondary: "#f3f4f6",
       accent: "#8b5cf6"
+    },
+    storeFooter: {
+      description: "Produtos de qualidade com design minimalista e funcional.",
+      contactEmail: "contato@cartiva.com",
+      contactPhone: "+55 (11) 9999-9999",
+      copyrightYear: new Date().getFullYear().toString()
     }
   };
 };

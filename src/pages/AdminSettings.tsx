@@ -1,6 +1,5 @@
-
 import { useState } from 'react';
-import { ArrowLeft, Save, Smartphone, Paintbrush, Store } from 'lucide-react';
+import { ArrowLeft, Save, Smartphone, Paintbrush, Store, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/PageLayout';
 import { Input } from '@/components/ui/input';
@@ -10,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useStore } from '@/context/StoreContext';
 import { StoreSettings } from '@/types';
+import { Textarea } from '@/components/ui/textarea';
 
 const AdminSettings = () => {
   const navigate = useNavigate();
@@ -23,10 +23,16 @@ const AdminSettings = () => {
       secondary: settings.storeColors.secondary,
       accent: settings.storeColors.accent
     },
-    storeLogo: settings.storeLogo
+    storeLogo: settings.storeLogo,
+    storeFooter: settings.storeFooter || {
+      description: "Produtos de qualidade com design minimalista e funcional.",
+      contactEmail: "contato@cartiva.com",
+      contactPhone: "+55 (11) 9999-9999",
+      copyrightYear: new Date().getFullYear().toString()
+    }
   });
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     if (name.startsWith('color')) {
@@ -36,6 +42,19 @@ const AdminSettings = () => {
         storeColors: {
           ...prev.storeColors,
           [colorKey]: value
+        }
+      }));
+    } else if (name.startsWith('footer')) {
+      const footerKey = name.replace('footer', '').toLowerCase() as 'description' | 'contactemail' | 'contactphone' | 'copyrightyear';
+      const mappedKey = footerKey === 'contactemail' ? 'contactEmail' : 
+                         footerKey === 'contactphone' ? 'contactPhone' : 
+                         footerKey === 'copyrightyear' ? 'copyrightYear' : footerKey;
+      
+      setFormData(prev => ({
+        ...prev,
+        storeFooter: {
+          ...prev.storeFooter!,
+          [mappedKey]: value
         }
       }));
     } else {
@@ -94,6 +113,10 @@ const AdminSettings = () => {
               <TabsTrigger value="appearance" className="flex items-center gap-2">
                 <Paintbrush className="h-4 w-4" />
                 Aparência
+              </TabsTrigger>
+              <TabsTrigger value="footer" className="flex items-center gap-2">
+                <FileText className="h-4 w-4" />
+                Rodapé
               </TabsTrigger>
             </TabsList>
             
@@ -273,6 +296,64 @@ const AdminSettings = () => {
                         <p className="text-sm mt-1 opacity-90">{formData.storeColors.accent}</p>
                       </div>
                     </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            
+            <TabsContent value="footer" className="mt-4 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informações do Rodapé</CardTitle>
+                  <CardDescription>
+                    Personalize o texto e informações exibidas no rodapé do site
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="footerDescription">Descrição da Loja</Label>
+                    <Textarea
+                      id="footerDescription"
+                      name="footerDescription"
+                      value={formData.storeFooter?.description}
+                      onChange={handleChange}
+                      placeholder="Produtos de qualidade com design minimalista e funcional."
+                      rows={3}
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="footerContactEmail">Email de Contato</Label>
+                    <Input
+                      id="footerContactEmail"
+                      name="footerContactEmail"
+                      type="email"
+                      value={formData.storeFooter?.contactEmail}
+                      onChange={handleChange}
+                      placeholder="contato@cartiva.com"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="footerContactPhone">Telefone de Contato</Label>
+                    <Input
+                      id="footerContactPhone"
+                      name="footerContactPhone"
+                      value={formData.storeFooter?.contactPhone}
+                      onChange={handleChange}
+                      placeholder="+55 (11) 9999-9999"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="footerCopyrightYear">Ano do Copyright</Label>
+                    <Input
+                      id="footerCopyrightYear"
+                      name="footerCopyrightYear"
+                      value={formData.storeFooter?.copyrightYear}
+                      onChange={handleChange}
+                      placeholder="2025"
+                    />
                   </div>
                 </CardContent>
               </Card>

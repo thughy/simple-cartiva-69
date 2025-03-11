@@ -43,4 +43,10 @@ export interface StoreSettings {
     accent: string;
   };
   storeLogo?: string;
+  storeFooter?: {
+    description: string;
+    contactEmail: string;
+    contactPhone: string;
+    copyrightYear: string;
+  };
 }
