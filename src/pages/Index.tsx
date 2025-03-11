@@ -14,36 +14,8 @@ const Index = () => {
   
   return (
     <PageLayout>
-      {/* Hero Section */}
-      <section className="relative h-[90vh] flex items-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img 
-            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1950&q=80" 
-            alt="Hero background" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/30" />
-        </div>
-        
-        <div className="container relative z-10 mx-auto px-6 animate-fade-up">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">Produtos com Design Excepcional</h1>
-            <p className="text-lg md:text-xl mb-8 text-white/80">
-              Descubra produtos que unem funcionalidade e estética minimalista
-            </p>
-            <Button 
-              onClick={() => navigate('/products')}
-              size="lg" 
-              className="button-hover"
-            >
-              Explorar Produtos
-            </Button>
-          </div>
-        </div>
-      </section>
-      
       {/* Featured Products Section */}
-      <section className="section-padding">
+      <section className="section-padding pt-24">
         <div className="container mx-auto">
           <div className="flex items-center justify-between mb-10">
             <div>
