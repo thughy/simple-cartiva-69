@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
-import { LogIn } from 'lucide-react';
+import { LogIn, ShieldCheck } from 'lucide-react';
 
 interface LocationState {
   from?: {
@@ -45,11 +45,14 @@ const Login = () => {
       <div className="container mx-auto py-16 px-4 flex items-center justify-center min-h-[70vh]">
         <Card className="w-full max-w-md animate-fade-up">
           <CardHeader className="space-y-1">
+            <div className="flex justify-center mb-2">
+              <ShieldCheck className="h-10 w-10 text-primary" />
+            </div>
             <CardTitle className="text-2xl font-bold text-center">
-              Acesso Administrativo
+              Área Administrativa
             </CardTitle>
             <CardDescription className="text-center">
-              Entre com suas credenciais de administrador
+              Acesso exclusivo para administradores da loja
             </CardDescription>
           </CardHeader>
           <CardContent>

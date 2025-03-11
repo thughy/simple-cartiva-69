@@ -24,13 +24,16 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
     );
   }
   
-  if (!isAuthenticated) {
-    return <Navigate to="/login" state={{ from: location }} replace />;
-  }
-  
-  // Verificar se é admin para rotas de administração
-  if (location.pathname.startsWith('/admin') && user?.role !== 'admin') {
-    return <Navigate to="/" replace />;
+  // Only admin routes require authentication
+  if (location.pathname.startsWith('/admin')) {
+    if (!isAuthenticated) {
+      return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+    
+    // Verify admin role
+    if (user?.role !== 'admin') {
+      return <Navigate to="/" replace />;
+    }
   }
   
   return <>{children}</>;
