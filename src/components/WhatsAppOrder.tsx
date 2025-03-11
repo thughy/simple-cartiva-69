@@ -27,7 +27,7 @@ const WhatsAppOrder = ({ product, quantity = 1 }: WhatsAppOrderProps) => {
       
       // Redireciona para o checkout
       setTimeout(() => {
-        navigate('/checkout');
+        navigate('/cart');  // Corrigido para '/cart' em vez de '/bag' ou '/checkout'
         setIsLoading(false);
       }, 500);
       
