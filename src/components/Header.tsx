@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X } from 'lucide-react';
 import { cn } from "@/lib/utils";
+import { useCart } from '@/context/CartContext';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
+  const { totalItems } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,13 +49,13 @@ const Header = () => {
         
         <div className="flex items-center space-x-4">
           <Link 
-            to="/bag" 
+            to="/cart" 
             className="p-2 rounded-full hover:bg-black/5 transition-colors relative"
             aria-label="Sacola de compras"
           >
             <ShoppingBag className="h-5 w-5" />
             <span className="absolute -top-1 -right-1 bg-primary text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-              0
+              {totalItems}
             </span>
           </Link>
           
